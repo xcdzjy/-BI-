@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: datasource-service
+  profiles:
+    active: pro
+
+#logging:
+#  config: classpath:logback-spring.xml

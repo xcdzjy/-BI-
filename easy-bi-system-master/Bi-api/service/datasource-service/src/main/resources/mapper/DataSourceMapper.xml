@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bi.datasource.mapper.DataSourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.bi.servicebase.entity.DataSource">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="dataSourceName" column="data_source_name" jdbcType="VARCHAR"/>
+            <result property="dataSourceType" column="data_source_type" jdbcType="VARCHAR"/>
+            <result property="dbName" column="db_name" jdbcType="VARCHAR"/>
+            <result property="tableName" column="table_name" jdbcType="VARCHAR"/>
+            <result property="tableSchema" column="table_schema" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,data_source_name,data_source_type,
+        db_name,table_name,table_schema
+    </sql>
+</mapper>

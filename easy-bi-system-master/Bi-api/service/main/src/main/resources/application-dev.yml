@@ -1,0 +1,26 @@
+server:
+  port: 8003
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    host: 39.108.157.35
+    password: 123456
+    port: 6379
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      discovery:
+        group: bi-pro
+        username: nacos
+        password: 123456@zhiyi
+        server-addr: 101.43.226.72:8848
+
+intercept:
+  urls:
+    - "/apis/v1/datasource/**"
+    - "/apis/v1/metadata/**"
+    - "/apis/v1/dataset/**"

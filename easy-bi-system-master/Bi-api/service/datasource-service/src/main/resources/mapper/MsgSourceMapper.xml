@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bi.datasource.mapper.MsgSourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.bi.datasource.entity.MsgSource">
+            <result property="msgTime" column="msg_time" jdbcType="OTHER"/>
+            <result property="senderName" column="sender_name" jdbcType="OTHER"/>
+            <result property="senderAccount" column="sender_account" jdbcType="OTHER"/>
+            <result property="senderSex" column="sender_sex" jdbcType="OTHER"/>
+            <result property="senderIp" column="sender_ip" jdbcType="OTHER"/>
+            <result property="senderOs" column="sender_os" jdbcType="OTHER"/>
+            <result property="senderPhonetype" column="sender_phonetype" jdbcType="OTHER"/>
+            <result property="senderNetwork" column="sender_network" jdbcType="OTHER"/>
+            <result property="senderGps" column="sender_gps" jdbcType="OTHER"/>
+            <result property="receiverName" column="receiver_name" jdbcType="OTHER"/>
+            <result property="receiverIp" column="receiver_ip" jdbcType="OTHER"/>
+            <result property="receiverAccount" column="receiver_account" jdbcType="OTHER"/>
+            <result property="receiverOs" column="receiver_os" jdbcType="OTHER"/>
+            <result property="receiverPhonetype" column="receiver_phonetype" jdbcType="OTHER"/>
+            <result property="receiverNetwork" column="receiver_network" jdbcType="OTHER"/>
+            <result property="receiverGps" column="receiver_gps" jdbcType="OTHER"/>
+            <result property="receiverSex" column="receiver_sex" jdbcType="OTHER"/>
+            <result property="msgType" column="msg_type" jdbcType="OTHER"/>
+            <result property="distance" column="distance" jdbcType="OTHER"/>
+            <result property="message" column="message" jdbcType="OTHER"/>
+    </resultMap>
+
+    <select id="queryByRule" parameterType="com.bi.datasource.entity.dto.QueryDto" resultType="map">
+        select
+        <foreach collection="queryDto.groupByList" item="group" separator="," close=",">
+            ${group}
+        </foreach>
+        <foreach collection="queryDto.selectList" item="select" separator=",">
+            ${select.function}(${select.field}) as ${select.field}
+        </foreach>
+        from ${tableName}
+        <where>
+            <foreach collection="queryDto.whereList" item="where" open="where ">
+                ${where.joiner} ${where.field} ${where.op}
+                <choose>
+                    <when test="where.op=='in'">
+                        <foreach collection="where.valueList" item="value" open="( " close=" )" separator=",">
+                            #{value}
+                        </foreach>
+                    </when>
+                    <when test="where.op=='between'">
+                        <foreach collection="where.valueList" item="value" index="index">
+                            <if test="index==0">
+                                between #{value} and
+                            </if>
+                            <if test="index==1">
+                                #{value}
+                            </if>
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        <foreach collection="where.valueList" item="value">
+                            #{value}
+                        </foreach>
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+        <foreach collection="queryDto.groupByList" item="group" separator="," open="group by">
+            ${group}
+        </foreach>
+        <foreach collection="queryDto.sort" item="sortItem" separator="," open="order by">
+            ${sortItem.field} ${sortItem.order}
+        </foreach>
+    </select>
+
+    <sql id="Base_Column_List">
+        msg_time,sender_name,sender_account,
+        sender_sex,sender_ip,sender_os,
+        sender_phonetype,sender_network,sender_gps,
+        receiver_name,receiver_ip,receiver_account,
+        receiver_os,receiver_phonetype,receiver_network,
+        receiver_gps,receiver_sex,msg_type,
+        distance,message
+    </sql>
+</mapper>

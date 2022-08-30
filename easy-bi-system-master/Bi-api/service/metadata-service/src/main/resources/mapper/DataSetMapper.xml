@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bi.metadata.mapper.DataSetMapper">
+
+    <resultMap id="BaseResultMap" type="com.bi.servicebase.entity.DataSet">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="descr" column="descr" jdbcType="VARCHAR"/>
+            <result property="dataSourceType" column="data_source_type" jdbcType="VARCHAR"/>
+            <result property="dbName" column="db_name" jdbcType="VARCHAR"/>
+            <result property="tableName" column="table_name" jdbcType="VARCHAR"/>
+            <result property="tableSchema" column="table_schema" jdbcType="VARCHAR"/>
+            <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+            <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="countByRule" parameterType="com.bi.servicebase.entity.vo.RuleVo" resultType="long">
+        SELECT COUNT(1)
+        FROM `data_set`
+        <where>
+            `status` = 0
+            <if test="ruleVo.keyword!=null">
+                <bind name="key" value="'%' + ruleVo.getKeyword() + '%'"/>
+                AND (`name` LIKE #{key} OR `descr` LIKE #{key})
+            </if>
+            <if test="ruleVo.createUser!=null and ruleVo.createUser!=''">
+                AND `create_user` = #{ruleVo.createUser}
+            </if>
+        </where>
+    </select>
+
+    <select id="listByRules" parameterType="com.bi.servicebase.entity.vo.RuleVo" resultType="com.bi.servicebase.entity.DataSet">
+        SELECT `create_time`,`name`,`descr`,`data_source_type`,`table_schema`, `id`,`create_user` ,`db_name` , `table_name`
+        FROM `data_set`
+        <where>
+            `status` = 0
+            <if test="ruleVo.keyword!=null">
+                <bind name="key" value="'%' + ruleVo.getKeyword() + '%'"/>
+                AND (`name` LIKE #{key} OR `descr` LIKE #{key})
+            </if>
+            <if test="ruleVo.createUser!=null and ruleVo.createUser!=''">
+                AND `create_user` = #{ruleVo.createUser}
+            </if>
+        </where>
+        <if test="ruleVo.orderBy!=null and ruleVo.orderBy!='' and ruleVo.order!=null and ruleVo.order!=''">
+            ORDER BY ${ruleVo.orderBy} ${ruleVo.order}
+        </if>
+        <if test="ruleVo.key!=null and ruleVo.pageSize!=null">
+            LIMIT #{ruleVo.key},#{ruleVo.pageSize}
+        </if>
+
+    </select>
+
+    <select id="info" parameterType="string" resultType="string">
+        SELECT `table_schema`
+        FROM `data_set`
+        <where>
+            <if test="id!=null and id!=''">
+                `id` = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="myList" parameterType="string" resultMap="BaseResultMap">
+        select * from `data_set`
+        <where>
+            <if test="username!=null and username!=''">
+                `create_user` = #{username}
+            </if>
+            and `status` = 0
+        </where>
+    </select>
+
+    <sql id="Base_Column_List">
+        id,app_id,name,
+        descr,data_source_type,db_name,
+        table_name,schema,create_user,
+        update_user,create_time,update_time,
+        status
+    </sql>
+</mapper>
